@@ -11,8 +11,9 @@ app.use(express.json());
 
 const storage = multer.diskStorage({
 
+    //Tem que existir essa pasta no projeto para funcionar
     destination: function(req, file, cb) {
-        cb(null, "uploads/");
+        cb(null, "backend/uploads/");
     },
 
     filename: function(req, file, cb) {
