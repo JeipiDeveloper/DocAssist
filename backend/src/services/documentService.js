@@ -57,10 +57,33 @@ function obterDocumento(documentoId) {
     return documentos.find((d) => d.id === documentoId);
 }
 
+function deletarDocumento(documentoId) {
+    const documentos = lerDocumentos();
+    const index = documentos.findIndex((d) => d.id === documentoId);
+
+    if (index === -1) {
+        throw new Error(`Documento com ID ${documentoId} não encontrado.`);
+    }
+
+    const [documentoRemovido] = documentos.splice(index, 1);
+    salvarDocumentos(documentos);
+
+    if (documentoRemovido.fileUrl && fs.existsSync(documentoRemovido.fileUrl)) {
+        try {
+            fs.unlinkSync(documentoRemovido.fileUrl);
+        } catch (err) {
+            console.warn(`Não foi possível remover o arquivo ${documentoRemovido.fileUrl}:`, err.message);
+        }
+    }
+
+    return documentoRemovido;
+}
+
 module.exports = {
     lerDocumentos,
     salvarDocumentos,
     criarDocumento,
     atualizarResumo,
     obterDocumento,
+    deletarDocumento,
 };

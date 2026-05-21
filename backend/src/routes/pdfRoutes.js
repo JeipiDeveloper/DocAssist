@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const { gerarRespostaDoDocumento } = require("../services/aiService");
-const { criarDocumento, atualizarResumo } = require("../services/documentService");
+const { criarDocumento, atualizarResumo, deletarDocumento } = require("../services/documentService");
 
 const router = express.Router();
 
@@ -23,7 +23,7 @@ router.post("/upload", upload.single("pdf"), async (req, res) => {
 
     try {
         // Criar documento instantaneamente
-        const documento = criarDocumento(req.file.originalname, req.file.path);
+        const documento = criarDocumento(req.body.name, req.file.path);
 
         // Retornar resposta imediata
         res.json({
@@ -49,6 +49,23 @@ router.post("/upload", upload.single("pdf"), async (req, res) => {
         return res.status(500).json({
             message: "Erro ao processar PDF.",
             error: error.message,
+        });
+    }
+});
+
+router.delete("/upload/:id", (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const documentoRemovido = deletarDocumento(id);
+        return res.json({
+            message: "Documento removido com sucesso",
+            document: documentoRemovido,
+        });
+    } catch (error) {
+        console.error(`Erro ao excluir documento ${id}:`, error);
+        return res.status(404).json({
+            message: error.message,
         });
     }
 });
