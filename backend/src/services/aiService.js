@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { lerPDF } = require("./pdfService");
 
+const model = "google/gemma-4-31b-it:free"
 const configPrompt =
 "Você é um assistente de consulta de documentos acadêmicos relacionados à universidade. " +
 "Você responde perguntas, faz buscas e resumos relacionados ao documento fornecido, " +
@@ -16,7 +17,7 @@ async function perguntarIA(promptCompleto) {
                 "Authorization": `Bearer ${process.env.API_KEY}`
             },
             body: JSON.stringify({
-                model: "deepseek/deepseek-v4-flash:free",
+                model: model,
                 messages: [
                     {
                         role: "user",
