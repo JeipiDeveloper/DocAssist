@@ -1,41 +1,30 @@
 require("dotenv").config();
+const { Ollama } = require("ollama");
 const { lerPDF } = require("./pdfService");
 
-const model = "google/gemma-4-31b-it:free"
+const model = "gemma4:31b-cloud"
 const configPrompt =
 "Você é um assistente de consulta de documentos acadêmicos relacionados à universidade. " +
 "Você responde perguntas, faz buscas e resumos relacionados ao documento fornecido, " +
-"de forma clara e concisa e sem introduções, apenas o que for pedido.";
+"de forma clara, concisa e sem introduções ou conclusões/perguntas, apenas o que for pedido.";
+
+const ollama = new Ollama({
+  host: 'https://ollama.com',
+  headers: { Authorization: `Bearer ${process.env.API_KEY}` },
+})
 
 async function perguntarIA(promptCompleto) {
-    const response = await fetch(
-        "https://openrouter.ai/api/v1/chat/completions",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.API_KEY}`
-            },
-            body: JSON.stringify({
-                model: model,
-                messages: [
-                    {
-                        role: "user",
-                        content: promptCompleto
-                    }
-                ],
-                reasoning: { enabled: false }
-            })
-        }
-    );
+    const response = await ollama.chat({
+        model: model,
+        messages: [
+            {
+                role: "user",
+                content: promptCompleto
+            }
+        ]
+    });
 
-    if (!response.ok) {
-        const errorBody = await response.text();
-        throw new Error(`OpenRouter API error ${response.status}: ${errorBody}`);
-    }
-
-    const data = await response.json();
-    return data?.choices?.[0]?.message?.content || "";
+    return response?.message?.content || "";
 }
 
 function montarPrompt(documento, perguntaUsuario) {
