@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const { gerarRespostaDoDocumento } = require("../services/aiService");
-const { criarDocumento, atualizarResumo, deletarDocumento, lerDocumentos } = require("../services/documentService");
+const { criarDocumento, atualizarResumo, deletarDocumento, lerDocumentos, obterDocumento } = require("../services/documentService");
 
 const router = express.Router();
 
@@ -77,6 +77,29 @@ router.get("/documents", (req, res) => {
     } catch (error) {
         console.error("Erro ao ler documentos:", error);
         return res.status(500).json({ message: "Erro ao ler documentos." });
+    }
+});
+
+router.post("/documents/:id/ask", async (req, res) => {
+    const { id } = req.params;
+    const { prompt } = req.body;
+
+    if (!prompt) {
+        return res.status(400).json({ message: "Campo 'prompt' é obrigatório." });
+    }
+
+    try {
+        const documento = obterDocumento(id);
+        if (!documento) {
+            return res.status(404).json({ message: "Documento não encontrado." });
+        }
+
+        const answer = await gerarRespostaDoDocumento(documento.fileUrl, prompt);
+
+        return res.json({ documentId: id, answer });
+    } catch (error) {
+        console.error("Erro ao processar ASK:", error);
+        return res.status(500).json({ message: "Erro ao processar pergunta.", error: error.message });
     }
 });
 
