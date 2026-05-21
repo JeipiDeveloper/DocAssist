@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const { gerarRespostaDoDocumento } = require("../services/aiService");
+const { criarDocumento, atualizarResumo } = require("../services/documentService");
 
 const router = express.Router();
 
@@ -21,19 +22,32 @@ router.post("/upload", upload.single("pdf"), async (req, res) => {
     }
 
     try {
-        const summary = await gerarRespostaDoDocumento(
-            req.file.path,
-            "Faça um resumo breve deste documento."
-        );
+        // Criar documento instantaneamente
+        const documento = criarDocumento(req.file.originalname, req.file.path);
 
-        return res.json({
+        // Retornar resposta imediata
+        res.json({
             message: "PDF enviado com sucesso",
-            summary,
+            document: documento,
         });
+
+        // Processar resumo assincronamente (sem await)
+        gerarRespostaDoDocumento(
+            req.file.path,
+            "Faça um resumo bem breve deste documento."
+        )
+            .then((summary) => {
+                atualizarResumo(documento.id, summary);
+                console.log(`Resumo gerado para documento ${documento.id}`);
+            })
+            .catch((error) => {
+                console.error(`Erro ao gerar resumo para ${documento.id}:`, error);
+                atualizarResumo(documento.id, `Erro ao gerar resumo: ${error.message}`);
+            });
     } catch (error) {
         console.error("Erro ao processar PDF:", error);
         return res.status(500).json({
-            message: "Erro ao gerar resumo do PDF.",
+            message: "Erro ao processar PDF.",
             error: error.message,
         });
     }
