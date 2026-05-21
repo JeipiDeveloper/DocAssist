@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const { gerarRespostaDoDocumento } = require("../services/aiService");
-const { criarDocumento, atualizarResumo, deletarDocumento } = require("../services/documentService");
+const { criarDocumento, atualizarResumo, deletarDocumento, lerDocumentos } = require("../services/documentService");
 
 const router = express.Router();
 
@@ -67,6 +67,16 @@ router.delete("/upload/:id", (req, res) => {
         return res.status(404).json({
             message: error.message,
         });
+    }
+});
+
+router.get("/documents", (req, res) => {
+    try {
+        const documentos = lerDocumentos();
+        return res.json(documentos);
+    } catch (error) {
+        console.error("Erro ao ler documentos:", error);
+        return res.status(500).json({ message: "Erro ao ler documentos." });
     }
 });
 
