@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const express = require("express");
 const multer = require("multer");
 const { gerarRespostaDoDocumento } = require("../services/aiService");
@@ -67,6 +69,33 @@ router.delete("/upload/:id", (req, res) => {
         return res.status(404).json({
             message: error.message,
         });
+    }
+});
+
+router.get("/documents/:id/download", (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const documento = obterDocumento(id);
+
+        if (!documento) {
+            return res.status(404).json({ message: "Documento não encontrado." });
+        }
+
+        const filePath = path.resolve(documento.fileUrl);
+
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ message: "Arquivo não encontrado." });
+        }
+
+        return res.sendFile(filePath, {
+            headers: {
+                "Content-Disposition": `inline; filename="${path.basename(filePath)}"`,
+            },
+        });
+    } catch (error) {
+        console.error(`Erro ao abrir documento ${id}:`, error);
+        return res.status(500).json({ message: "Erro ao abrir documento." });
     }
 });
 

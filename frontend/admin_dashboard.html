@@ -52,7 +52,7 @@
       <p class="small">Preencha apenas o nome do PDF e selecione o arquivo.</p>
       <form id="uploadForm">
         <label for="title">Nome do PDF</label>
-        <input id="title" name="title" type="text" required>
+        <input id="title" name="name" type="text" required>
         <label for="file">Arquivo PDF</label>
         <input id="file" name="file" type="file" accept="application/pdf" required>
         <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
@@ -64,116 +64,136 @@
   </div>
 
   <script>
-    // Using IndexedDB for local storage (no backend required)
-    const DB_NAME = 'docassist-db';
-    const STORE_NAME = 'editais';
-
-    function openDB(){
-      return new Promise((resolve, reject) => {
-        const req = indexedDB.open(DB_NAME, 1);
-        req.onupgradeneeded = () => {
-          const db = req.result;
-          if(!db.objectStoreNames.contains(STORE_NAME)){
-            db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-          }
-        };
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    async function idbAdd(item){
-      const db = await openDB();
-      return new Promise((resolve,reject)=>{
-        const tx = db.transaction(STORE_NAME,'readwrite');
-        tx.objectStore(STORE_NAME).put(item);
-        tx.oncomplete = ()=> resolve(item);
-        tx.onerror = ()=> reject(tx.error);
-      });
-    }
-
-    async function idbGetAll(){
-      const db = await openDB();
-      return new Promise((resolve,reject)=>{
-        const tx = db.transaction(STORE_NAME,'readonly');
-        const req = tx.objectStore(STORE_NAME).getAll();
-        req.onsuccess = ()=> resolve(req.result.reverse());
-        req.onerror = ()=> reject(req.error);
-      });
-    }
+    const API_BASE = 'http://localhost:3000';
     const listEl = document.getElementById('list');
     const modal = document.getElementById('modal');
     const btnUpload = document.getElementById('btnUpload');
     const cancel = document.getElementById('cancel');
     const uploadForm = document.getElementById('uploadForm');
 
+    async function fetchDocuments(){
+      const response = await fetch(`${API_BASE}/documents`);
+      if(!response.ok){
+        throw new Error('Não foi possível carregar os documentos.');
+      }
+      return response.json();
+    }
+
+    async function uploadDocument(name, file){
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('pdf', file);
+
+      const response = await fetch(`${API_BASE}/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if(!response.ok){
+        throw new Error(data.message || 'Não foi possível enviar o documento.');
+      }
+
+      return data;
+    }
+
+    async function deleteDocument(id){
+      const response = await fetch(`${API_BASE}/upload/${id}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if(!response.ok){
+        throw new Error(data.message || 'Não foi possível remover o documento.');
+      }
+
+      return data;
+    }
+
     function render(list){
-      if(!list || list.length===0){ listEl.innerHTML = '<div class="small">Nenhum documento encontrado.</div>'; return }
+      if(!Array.isArray(list) || list.length === 0){
+        listEl.innerHTML = '<div class="small">Nenhum documento encontrado.</div>';
+        return;
+      }
+
       listEl.innerHTML = '';
-        list.forEach(item =>{
+
+      list.forEach(item => {
         const div = document.createElement('div');
         div.className = 'list-item';
-        // create object URL for blob if present
-        let url = item.path || '';
-        if(!url && item.blob){
-          try{ url = URL.createObjectURL(item.blob); }
-          catch(e){ url = '#'; }
-        }
+
+        const statusText = item.processing
+          ? 'Resumo em processamento'
+          : (item.summary || 'Resumo ainda não disponível');
+
+        const downloadUrl = `${API_BASE}/documents/${item.id}/download`;
+
         div.innerHTML = `
           <div>
-            <div style="font-weight:600">${item.title}</div>
-            <div class="small">${item.summary? item.summary : 'Resumo pendente'}</div>
+            <div style="font-weight:600">${item.name}</div>
+            <div class="small">${statusText}</div>
+            <div class="small" style="margin-top:6px">${new Date(item.createdAt).toLocaleString()}</div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end">
-            <a class="btn" href="${url}" target="_blank">Abrir PDF</a>
-            <div class="small" style="margin-top:8px">${new Date(item.uploadedAt).toLocaleString()}</div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+            <a class="btn" href="${downloadUrl}" target="_blank" rel="noreferrer">Abrir PDF</a>
+            <button type="button" class="link-back" data-delete-id="${item.id}">Excluir</button>
           </div>
         `;
+
+        div.querySelector('[data-delete-id]').addEventListener('click', async () => {
+          try {
+            await deleteDocument(item.id);
+            await load();
+          } catch (error) {
+            alert(error.message);
+          }
+        });
+
         listEl.appendChild(div);
-      })
+      });
     }
 
     async function load(){
-      try{
-        const data = await idbGetAll();
+      try {
+        const data = await fetchDocuments();
         render(data);
-      }catch(e){
-        listEl.innerHTML = '<div class="small">Erro ao carregar.</div>';
+      } catch (error) {
+        listEl.innerHTML = `<div class="small">${error.message}</div>`;
       }
     }
 
-    // polling every 5 seconds
     load();
     setInterval(load, 5000);
 
-    btnUpload.addEventListener('click', ()=> modal.classList.add('open'));
-    cancel.addEventListener('click', ()=> modal.classList.remove('open'));
+    btnUpload.addEventListener('click', () => modal.classList.add('open'));
+    cancel.addEventListener('click', () => modal.classList.remove('open'));
 
-    uploadForm.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const title = document.getElementById('title').value.trim();
+    uploadForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const name = document.getElementById('title').value.trim();
       const fileInput = document.getElementById('file');
-      const f = fileInput.files[0];
-      if(!f){ alert('Selecione um PDF'); return; }
-      if(!title){ alert('Preencha o nome do PDF'); return; }
-      try{
-        const arrayBuffer = await f.arrayBuffer();
-        const blob = new Blob([arrayBuffer], { type: f.type });
-        const item = {
-          id: Date.now(),
-          title,
-          summary: '',
-          originalName: f.name,
-          blob,
-          path: '',
-          uploadedAt: new Date().toISOString()
-        };
-        await idbAdd(item);
+      const file = fileInput.files[0];
+
+      if (!name) {
+        alert('Preencha o nome do PDF');
+        return;
+      }
+
+      if (!file) {
+        alert('Selecione um PDF');
+        return;
+      }
+
+      try {
+        await uploadDocument(name, file);
         modal.classList.remove('open');
         uploadForm.reset();
         await load();
-      }catch(err){
-        alert('Erro ao salvar localmente');
+      } catch (error) {
+        alert(error.message);
       }
     });
   </script>

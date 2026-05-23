@@ -518,75 +518,56 @@
     </main>
 
     <script>
-    // Polling: carrega editais do backend em http://localhost:3000/api/editais e atualiza a grid a cada 5s
     (function(){
         const API_BASE = 'http://localhost:3000';
         const grid = document.getElementById('cardsGrid');
         if(!grid) return;
-        // If backend is available, prefer it; otherwise use IndexedDB local storage.
-        function openDB(){
-          return new Promise((resolve,reject)=>{
-            const req = indexedDB.open('docassist-db',1);
-            req.onupgradeneeded = ()=>{
-              const db = req.result;
-              if(!db.objectStoreNames.contains('editais')) db.createObjectStore('editais',{keyPath:'id'});
-            };
-            req.onsuccess = ()=> resolve(req.result);
-            req.onerror = ()=> reject(req.error);
-          });
-        }
-        async function idbGetAll(){
-          const db = await openDB();
-          return new Promise((resolve,reject)=>{
-            const r = db.transaction('editais').objectStore('editais').getAll();
-            r.onsuccess = ()=> resolve(r.result.reverse());
-            r.onerror = ()=> reject(r.error);
-          });
-        }
 
         async function load(){
-            // try backend first
-            try{
-                const r = await fetch(API_BASE + '/api/editais');
-                if(r.ok){
-                    const list = await r.json();
-                    renderList(list);
-                    return;
+            try {
+                const response = await fetch(API_BASE + '/documents');
+                if(!response.ok){
+                    throw new Error('Não foi possível carregar os documentos.');
                 }
-            }catch(e){ /* ignore */ }
 
-            // fallback to IDB
-            try{
-                const list = await idbGetAll();
+                const list = await response.json();
                 renderList(list);
-            }catch(e){ /* keep static */ }
+            } catch (error) {
+                grid.innerHTML = '<div class="small">Não foi possível carregar os editais no momento.</div>';
+            }
         }
 
         function renderList(list){
-            if(!Array.isArray(list) || list.length===0){
+            if(!Array.isArray(list) || list.length === 0){
                 grid.innerHTML = '<div class="small">Nenhum edital disponível.</div>';
                 return;
             }
+
             grid.innerHTML = '';
-            list.forEach(item=>{
-                const status = item.deadline && new Date(item.deadline) < new Date() ? 'Encerrado' : 'Aberto';
-                const tagClass = (item.category||'').toLowerCase().includes('pós') ? 'blue' : (item.category||'').toLowerCase().includes('aux') ? 'yellow' : 'green';
+
+            list.forEach(item => {
+                const status = item.processing ? 'Processando' : 'Disponível';
+                const summary = item.processing
+                    ? 'Resumo em processamento...'
+                    : (item.summary || 'Resumo ainda não disponível.');
+
                 const card = document.createElement('a');
                 card.className = 'card';
-                let href = item.path || '#';
-                if(item.blob){ try{ href = URL.createObjectURL(item.blob); }catch(e){ href = '#'; } }
-                if(!href.startsWith('http') && !href.startsWith('blob:')) href = API_BASE + href;
-                card.href = href;
+                card.href = `${API_BASE}/documents/${item.id}/download`;
+                card.target = '_blank';
+                card.rel = 'noreferrer';
+
                 card.innerHTML = `
                     <div class="card-header">
-                        <span class="tag ${tagClass}">${item.category || 'Geral'}</span>
+                        <span class="tag green">Documento</span>
                         <span class="status">${status}</span>
                     </div>
-                    <h3>${item.title || item.originalName || 'Edital'}</h3>
-                    <p class="small">${item.summary || ''}</p>
-                    <div class="card-date"><i class="fa-regular fa-calendar"></i> Prazo: ${item.deadline || '-'}</div>
-                    <div class="btn-card">${status === 'Aberto' ? 'Ver Edital' : 'Edital Encerrado'}</div>
+                    <h3>${item.name || 'Documento PDF'}</h3>
+                    <p class="small">${summary}</p>
+                    <div class="card-date"><i class="fa-regular fa-calendar"></i> Enviado em ${new Date(item.createdAt).toLocaleString()}</div>
+                    <div class="btn-card">${item.processing ? 'Processando resumo' : 'Ver edital'}</div>
                 `;
+
                 grid.appendChild(card);
             });
         }

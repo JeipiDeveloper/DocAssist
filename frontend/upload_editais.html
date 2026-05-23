@@ -42,30 +42,70 @@
             </div>
 
             <div id="allowed" style="margin-top:16px">
-                <form action="/upload" method="post" enctype="multipart/form-data">
-                    <label for="titulo">Título do Edital</label>
-                    <input id="titulo" name="titulo" type="text" placeholder="Título do edital" required>
-
-                    <label for="tag">Categoria</label>
-                    <select id="tag" name="tag">
-                        <option>Bolsas</option>
-                        <option>Pós-Graduação</option>
-                        <option>Auxílios</option>
-                    </select>
-
-                    <label for="prazo">Prazo</label>
-                    <input id="prazo" name="prazo" type="date">
+                <form id="uploadForm">
+                    <label for="name">Título do Edital</label>
+                    <input id="name" name="name" type="text" placeholder="Título do edital" required>
 
                     <label for="pdf">Arquivo PDF</label>
                     <input id="pdf" name="pdf" type="file" accept="application/pdf" required>
 
                     <div class="actions">
-                        <button type="submit" class="btn">Enviar</button>
+                        <button type="submit" class="btn" id="submitBtn">Enviar</button>
                         <a href="admin.html#dashboard" class="link-back">Voltar ao Painel</a>
                     </div>
                 </form>
+
+                <p id="statusMessage" class="hint"></p>
             </div>
         </div>
     </main>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+        const form = document.getElementById('uploadForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMessage = document.getElementById('statusMessage');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const pdf = document.getElementById('pdf').files[0];
+
+            if (!pdf) {
+                statusMessage.textContent = 'Selecione um arquivo PDF.';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+            statusMessage.textContent = 'Enviando o arquivo para o backend...';
+
+            try {
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('pdf', pdf);
+
+                const response = await fetch(`${API_BASE}/upload`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Não foi possível enviar o edital.');
+                }
+
+                statusMessage.textContent = `Upload concluído: ${data.document?.name || name}. O resumo será gerado automaticamente.`;
+                form.reset();
+            } catch (error) {
+                statusMessage.textContent = error.message || 'Erro ao enviar o edital.';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Enviar';
+            }
+        });
+    </script>
 </body>
 </html>
