@@ -460,26 +460,19 @@
 </head>
 <body>
 
-    <header>
+    <!-- <header>
         <div class="logo">
             <i class="fa-solid fa-file-lines"></i> DocAssist
         </div>
         <nav class="nav-links">
-            <a href="#">Editais</a> 
-            
-            <a href="#">Sobre</a> 
-            
-            <a href="#">Contato</a> 
+            <a href="#">Editais</a>
         </nav>
-        
+
         <a href="admin.html" class="btn-admin"><i class="fa-solid fa-shield-halved"></i> Admin</a>
-    </header>
+    </header> -->
 
     <main>
         <section class="hero">
-            <div class="badge-ai">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Plataforma universitária inteligente
-            </div>
             <h1>DocAssist</h1>
             <p>Analise editais universitários com inteligência artificial. Encontre bolsas, programas e auxílios de forma rápida e eficiente.</p>
             
@@ -502,18 +495,6 @@
 
             <div id="cardsGrid" class="cards-grid"></div>
 
-            <div class="carousel-controls">
-                <button class="carousel-btn"><i class="fa-solid fa-arrow-left"></i></button>
-                <div class="carousel-dots">
-                    <div class="dot active"></div>
-                    <div class="dot"></div>
-                </div>
-                <button class="carousel-btn"><i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-
-            <div class="view-all-container">
-                <a href="#" class="btn-view-all">Ver todos os editais <i class="fa-regular fa-file-lines"></i></a>
-            </div>
         </section>
     </main>
 
@@ -558,10 +539,7 @@
                 card.rel = 'noreferrer';
 
                 card.innerHTML = `
-                    <div class="card-header">
-                        <span class="tag green">Documento</span>
-                        <span class="status">${status}</span>
-                    </div>
+                    
                     <h3>${item.name || 'Documento PDF'}</h3>
                     <p class="small">${summary}</p>
                     <div class="card-date"><i class="fa-regular fa-calendar"></i> Enviado em ${new Date(item.createdAt).toLocaleString()}</div>
@@ -576,39 +554,6 @@
         setInterval(load,5000);
     })();
     </script>
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-col">
-                <div class="footer-logo">
-                    <i class="fa-solid fa-file-lines"></i> DocAssist
-                </div>
-                <p>Plataforma universitária para análise inteligente de editais. Facilitando o acesso a bolsas, programas de pós-graduação e auxílios estudantis.</p>
-            </div>
-
-            <div class="footer-col">
-                <h4>Navegação</h4>
-                <ul class="footer-links">
-                    <li><a href="#">Início</a></li>
-                    <li><a href="#">Editais</a></li>
-                    <li><a href="#">Área Administrativa</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-col">
-                <h4>Contato</h4>
-                <ul class="footer-links">
-                    <li><a href="mailto:contato@docassist.edu"><i class="fa-regular fa-envelope"></i> contato@docassist.edu</a></li>
-                    <li><a href="#"><i class="fa-brands fa-github"></i> GitHub</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <div>2026 DocAssist. Todos os direitos reservados.</div>
-            <div>Desenvolvido com inteligência artificial</div>
-        </div>
-    </footer>
 
 </body>
 </html>
