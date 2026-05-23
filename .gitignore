@@ -1,4 +1,7 @@
-node_modules
+node_modules/
 .env
-dist
-backend/testsTemp
+.DS_Store
+*.log
+dist/
+/.vscode/
+thumbs.db

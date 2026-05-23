@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocAssist - Área Administrativa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root{
+            --bg-color: #060913;
+            --card-bg: #0f1523;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --accent-blue: #3b82f6;
+            --border-color: #1e293b;
+        }
+        *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif}
+        body{background:var(--bg-color);color:var(--text-primary);min-height:100vh}
+        header{display:flex;justify-content:space-between;align-items:center;padding:18px 5%;border-bottom:1px solid var(--border-color)}
+        .logo{font-weight:700;display:flex;align-items:center;gap:10px}
+        .admin-container{max-width:1000px;margin:48px auto;padding:20px}
+        .admin-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:24px}
+        .login-form{max-width:420px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+        label{font-size:0.9rem;color:var(--text-secondary)}
+        input{background:transparent;border:1px solid var(--border-color);padding:10px;border-radius:8px;color:var(--text-primary)}
+        .btn{background:var(--accent-blue);color:#fff;padding:10px;border-radius:8px;border:none;cursor:pointer}
+        .dashboard{display:none;gap:18px}
+        /* mostra o painel quando o fragmento #dashboard está ativo (após formulário válido) */
+        #dashboard:target{display:block}
+        .dash-grid{display:grid;grid-template-columns:1fr 320px;gap:20px}
+        .card{background:var(--card-bg);padding:16px;border-radius:10px;border:1px solid var(--border-color)}
+        .small{font-size:0.9rem;color:var(--text-secondary)}
+        .top-actions{display:flex;gap:12px}
+        .link-back{background:transparent;border:1px solid var(--border-color);padding:8px 12px;border-radius:8px;color:var(--text-secondary)}
+        @media(max-width:800px){.dash-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><i class="fa-solid fa-file-lines" style="color:var(--accent-blue)"></i> DocAssist</div>
+        <nav>
+            <a href="site_ofc.html" class="link-back"><i class="fa-solid fa-arrow-left"></i> Voltar ao site</a>
+        </nav>
+    </header>
+
+    <main class="admin-container">
+        <div class="admin-card">
+            <h2>Área Administrativa</h2>
+            <p class="small">Tela única: faça login (qualquer senha aceita) e use a área de uploads visível apenas para administradores (cliente somente).</p>
+
+            <!-- Painel administrativo vem antes para que possamos usar :target para controlar visibilidade do formulário -->
+            <div id="dashboard" class="dashboard">
+                <div style="margin-top:18px">
+                    <div class="top-actions">
+                        <a href="admin.html" class="link-back">Sair</a>
+                        <a href="upload_editais.html#allowed" class="btn">Ir para Uploads</a>
+                    </div>
+                </div>
+
+                <div class="dash-grid" style="margin-top:18px">
+                    <div>
+                        <div class="card">
+                            <h3>Últimos Editais</h3>
+                            <ul class="small" style="margin-top:8px;list-style:none;padding-left:0">
+                                <li>Iniciação Científica 2024 — Encerrado</li>
+                                <li>Mestrado - Ciência da Computação — Encerrado</li>
+                                <li>Auxílio Emergencial Estudantil — Encerrado</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="margin-top:12px">
+                            <h3>Ações Rápidas</h3>
+                            <div class="small" style="margin-top:8px">Ferramentas administrativas (exemplo).</div>
+                        </div>
+                    </div>
+
+                    <div>
+                                <div class="card">
+                                    <h3>Informações</h3>
+                                    <div class="small" style="margin-top:8px">Área administrativa — informações de usuário não exibidas por segurança.</div>
+                                </div>
+                    </div>
+                </div>
+
+                <!-- Uploads movidos para página separada (upload_editais.html#allowed) -->
+            </div>
+
+            <!-- Formulário de login falso: submete para admin_dashboard.html sem validação -->
+            <form action="admin_dashboard.html" method="get" class="login-form" id="loginForm">
+                <label for="user">Usuário</label>
+                <input id="user" name="user" placeholder="admin" value="admin">
+
+                <label for="pass">Senha</label>
+                <input id="pass" name="password" type="password" placeholder="digite qualquer senha">
+
+                <div style="display:flex;gap:12px;margin-top:6px">
+                    <button type="submit" class="btn">Entrar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>
