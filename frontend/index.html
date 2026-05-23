@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universidade Federal - Edital Concurso 2026</title>
+    <style>
+        :root {
+            --bg-page: #f4f6f9;
+            --bg-card: #ffffff;
+            --bg-bubble-user: #f1f5f9;
+            --bg-bubble-ai: #e8f0fe;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --uni-blue: #0f172a; /* Azul escuro institucional */
+            --accent-color: #1a73e8; /* Azul NotebookLM */
+            --accent-hover: #1557b0;
+            --border-color: #e2e8f0;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- TOPO INSTITUCIONAL DA UNIVERSIDADE --- */
+        .uni-header {
+            background-color: var(--uni-blue);
+            color: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .uni-brand {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .uni-brand .main-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .uni-brand .sub-title {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .main-layout {
+            display: flex;
+            flex-grow: 1;
+            height: calc(100vh - 68px);
+        }
+
+        /* PAINEL ESQUERDO: Informações Oficiais e Botão do PDF */
+        .info-sidebar {
+            width: 360px;
+            background-color: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+        }
+
+        .edital-badge {
+            background-color: #fef3c7;
+            color: #d97706;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            align-self: flex-start;
+        }
+
+        .edital-info h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .edital-info p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* O botão principal para abrir o arquivo bruto */
+        .pdf-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #ffffff; /* Vermelho PDF para contraste */
+            color: rgb(0, 0, 0);
+            text-decoration: none;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(53, 53, 53, 0.2);
+        }
+
+        .pdf-action-btn:hover {
+            background-color: #ece8e8;
+        }
+
+        .quick-facts {
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .fact-item {
+            margin-bottom: 14px;
+            font-size: 0.85rem;
+        }
+
+        .fact-item strong {
+            display: block;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        /* PAINEL DIREITO: O Chatbot estilo NotebookLM */
+        .chat-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-page);
+        }
+
+        .chat-welcome {
+            padding: 24px 40px;
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chat-welcome h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+        }
+
+        .chat-welcome p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Histórico do Chat */
+        .chat-history {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .msg-row {
+            display: flex;
+            width: 100%;
+        }
+
+        .msg-row.user { justify-content: flex-end; }
+        .msg-row.ai { justify-content: flex-start; }
+
+        .msg-bubble {
+            max-width: 65%;
+            padding: 16px 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        .user .msg-bubble {
+            background-color: var(--bg-bubble-user);
+            border-radius: var(--radius-lg) var(--radius-lg) 4px var(--radius-lg);
+			border: 1px solid #d2e3fc;
+			
+        }
+
+        .ai .msg-bubble {
+            background-color: var(--bg-bubble-ai);
+            border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 4px;
+            border: 1px solid #d2e3fc;
+        }
+
+        /* Sugestões de perguntas rápidas (Cliques rápidos igual ao NotebookLM) */
+        .suggested-questions {
+            display: flex;
+            gap: 10px;
+            padding: 0 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .suggestion-chip {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .suggestion-chip:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            background-color: #f8fafc;
+        }
+
+        /* Input de Texto */
+        .input-container {
+            padding: 20px 40px 32px 40px;
+        }
+
+        .input-box {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 8px 16px 8px 24px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .input-box:focus-within {
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 16px rgba(26, 115, 232, 0.1);
+        }
+
+        .input-field {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            padding: 12px 0;
+            font-size: 1rem;
+            background: transparent;
+        }
+
+        .send-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        /* Responsividade Básica */
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column; overflow-y: auto; height: auto; }
+            .info-sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-color); padding: 20px; }
+            .chat-history { padding: 20px; }
+            .msg-bubble { max-width: 85%; }
+            .suggested-questions { padding: 0 20px; }
+            .input-container { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO INSTITUCIONAL -->
+    <header class="uni-header">
+        <div class="uni-brand">
+            <span class="main-title">UNIVERSIDADE ESTADUAL DO PIAUI</span>
+            <span class="sub-title">Area de editais &bull; DocAssist</span>
+        </div>
+    </header>
+
+    <!-- CONTAINER DA PÁGINA DO EDITAL -->
+    <div class="main-layout">
+        
+        <!-- PAINEL ESQUERDO: O Documento Oficial -->
+       <aside class="info-sidebar">
+    <span class="edital-badge" id="status-badge">Carregando...</span>
+    <div class="edital-info">
+        <h2 id="edital-titulo">Processando edital...</h2>
+        <p>Publicado em: <span id="edital-data-publicacao">-</span></p>
+    </div>
+
+    <a href="#" target="_blank" class="pdf-action-btn" id="pdf-link">
+        <span>📂</span> Abrir PDF Original Completo
+    </a>
+
+    <div class="quick-facts">
+        <div class="fact-item">
+            <strong>Período de Inscrição</strong>
+            <span id="fact-periodo">-</span>
+        </div>
+        <div class="fact-item">
+            <strong>Publico alvo</strong>
+            <span id="fact-target">-</span>
+        </div>
+    </div>
+</aside>
+
+        <!-- PAINEL DIREITO: Assistente IA do Edital -->
+        <main class="chat-area">
+            
+            <div class="chat-welcome">
+                <h3>DocAssist</h3>
+                <p>Consulta inteligente sobre documentos</p>
+            </div>
+
+            <!-- Conversa -->
+            <section class="chat-history">
+                
+                <div class="msg-row ai">
+                    <div class="msg-bubble">
+                        Olá! Eu li todo o <strong>Edital 04/2026</strong> por você. Você pode me perguntar coisas como "Qual o salário para nível médio?" ou usar os botões de atalho aqui embaixo. Como posso ajudar?
+                    </div>
+                </div>
+
+                <div class="msg-row user">
+                    <div class="msg-bubble">
+                        Até quando posso pedir a isenção da taxa?
+                    </div>
+                </div>
+
+                <div class="msg-row ai">
+                    <div class="msg-bubble">
+                        O pedido de **isenção da taxa de inscrição** deve ser feito logo no início do prazo: entre os dias **20/05 e 25/05/2026**, diretamente na Área do Candidato. É necessário comprovar inscrição no Cadastro Único (CadÚnico) ou ser doador de medula óssea.
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Mantenha essa div, mas deixe-a vazia no HTML bruto -->
+				<div class="suggested-questions" id="chips-container">
+    		<!-- Os botões gerados pela IA vão entrar aqui dinamicamente -->
+			</div>
+
+            <!-- Campo de Input -->
+            <footer class="input-container">
+                <div class="input-box">
+                    <input type="text" class="input-field" placeholder="Pergunte sobre vagas, requisitos, cotas...">
+                    <button class="send-button" aria-label="Enviar">➔</button>
+                </div>
+            </footer>
+
+        </main>
+
+    </div>
+
+</body>
+<script>
+    // 1. Simulação do que a sua IA extraiu do edital após a leitura do PDF
+    // Na vida real, esses dados virão da sua API (Ex: JSON do Gemini/GPT)
+    const sugestoesDaIA = [
+        "⏰ Quais as datas mais importantes do cronograma?",
+		"📋 Quais os documentos necessários?",
+    ];
+
+    // 2. Função que renderiza os botões na tela
+    function carregarSugestoesDaIA(sugestoes) {
+        const container = document.getElementById('chips-container');
+        const inputField = document.querySelector('.input-field');
+        
+        // Limpa sugestões antigas se houver
+        container.innerHTML = '';
+
+        // Cria um botão para cada sugestão enviada pela IA
+        sugestoes.forEach(texto => {
+            const botao = document.createElement('button');
+            botao.className = 'suggestion-chip';
+            botao.innerText = texto;
+
+            // Evento de clique: joga o texto no input e foca o cursor lá
+            botao.addEventListener('click', () => {
+                inputField.value = texto;
+                inputField.focus();
+                
+                // Opcional: Aqui você já disparar a função de enviar a mensagem automaticamente se quiser
+                console.log(`Enviando pergunta: "${texto}" para a API...`);
+            });
+
+            container.appendChild(botao);
+        });
+    }
+
+    // Executa a função assim que a página carrega (ou quando a IA terminar de ler o edital)
+    window.addEventListener('DOMContentLoaded', () => {
+        carregarSugestoesDaIA(sugestoesDaIA);
+    });
+
+	// 1. Simulação do JSON que o seu servidor/IA vai gerar ao ler o PDF
+// Na sua aplicação real, isso virá de uma requisição 'fetch' da sua API.
+const dadosExtraidosDoPDF = {
+    titulo: "Edital nº 12/2026 - Professor Substituto de Tecnologia",
+    dataPublicacao: "18 de Maio de 2026",
+    status: "Inscrições Abertas",
+    linkPdf: "https://site.universidade.edu.br/editais/edital-12-2026.pdf",
+    periodoInscricao: "25/05/2026 até 05/06/2026",
+    targetpublic: "Universidade Estadual do Piauí - Campus Torquato Neto",
+    taxa: "R$ 80,00"
+};
+
+// 2. Função que injeta os dados do PDF nos campos da esquerda
+function atualizarPainelEsquerdo(dados) {
+    // Atualiza os textos simples
+    document.getElementById('edital-titulo').innerText = dados.titulo;
+    document.getElementById('edital-data-publicacao').innerText = dados.dataPublicacao;
+    document.getElementById('fact-periodo').innerText = dados.periodoInscricao;
+    document.getElementById('fact-target').innerText = dados.targetpublic;
+    document.getElementById('fact-taxa').innerText = dados.taxa;
+    
+    // Atualiza o Badge de Status
+    const badge = document.getElementById('status-badge');
+    badge.innerText = dados.status;
+    
+    // Altera a cor do badge dependendo do status (opcional)
+    if (dados.status.toLowerCase().includes("encerrada")) {
+        badge.style.backgroundColor = "#fee2e2"; // vermelho claro
+        badge.style.color = "#dc2626";
+    } else {
+        badge.style.backgroundColor = "#fef3c7"; // amarelo/laranja original
+        badge.style.color = "#d97706";
+    }
+
+    // Atualiza o link do botão do PDF original
+    document.getElementById('pdf-link').href = dados.linkPdf;
+}
+
+// Executa a atualização assim que a página receber os dados do documento
+window.addEventListener('DOMContentLoaded', () => {
+    // Simulando um pequeno atraso de carregamento do arquivo
+    setTimeout(() => {
+        atualizarPainelEsquerdo(dadosExtraidosDoPDF);
+    }, 1000); 
+});
+</script>
+</html>

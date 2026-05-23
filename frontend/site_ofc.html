@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocAssist - Plataforma Universitária Inteligente</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- VARIÁVEIS DE CORES E ESTILOS GERAIS --- */
+        :root {
+            --bg-color: #060913;
+            --card-bg: #0f1523;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --accent-blue: #3b82f6;
+            --accent-blue-hover: #2563eb;
+            --border-color: #1e293b;
+            
+            --tag-green-bg: rgba(16, 185, 129, 0.1);
+            --tag-green-text: #10b981;
+            --tag-blue-bg: rgba(59, 130, 246, 0.1);
+            --tag-blue-text: #3b82f6;
+            --tag-yellow-bg: rgba(245, 158, 11, 0.1);
+            --tag-yellow-text: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            /* Fundo quadriculado muito sutil */
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        /* --- CABEÇALHO (NAVBAR) --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            border-bottom: 1px solid var(--border-color);
+            background-color: rgba(6, 9, 19, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--accent-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .btn-admin {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-admin:hover {
+            background-color: var(--card-bg);
+            border-color: var(--text-secondary);
+        }
+
+        /* --- SEÇÃO HERO (INÍCIO) --- */
+        .hero {
+            text-align: center;
+            padding: 100px 5% 80px;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Efeito de brilho azul no fundo */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(50px);
+        }
+
+        .badge-ai {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-features {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .hero-features span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-features i {
+            color: var(--accent-blue);
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-blue-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--card-bg);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #1a2235;
+        }
+
+        /* --- SEÇÃO EDITAIS --- */
+        .editais-section {
+            padding: 60px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .section-title span {
+            color: #00f2fe;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 50px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .tag.green { background-color: var(--tag-green-bg); color: var(--tag-green-text); }
+        .tag.blue { background-color: var(--tag-blue-bg); color: var(--tag-blue-text); }
+        .tag.yellow { background-color: var(--tag-yellow-bg); color: var(--tag-yellow-text); }
+
+        .status {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background-color: rgba(255,255,255,0.05);
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            flex-grow: 1; /* Faz o botão ficar sempre no fundo */
+        }
+
+        .card-date {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+        }
+
+        .btn-card {
+            display: block;
+            text-align: center;
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 500;
+            width: 100%;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .carousel-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .carousel-dots {
+            display: flex;
+            gap: 8px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+        }
+        .dot.active {
+            background-color: var(--accent-blue);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        .view-all-container {
+            text-align: center;
+        }
+
+        .btn-view-all {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* --- RODAPÉ (FOOTER) --- */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 60px 5% 30px;
+            margin-top: 60px;
+            background-color: #060913;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .footer-logo i { color: var(--accent-blue); }
+
+        .footer-col p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            max-width: 300px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        .footer-links i {
+            margin-right: 8px;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 20px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* Responsividade Básica */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            .hero-features { flex-direction: column; align-items: center; }
+            .hero-buttons { flex-direction: column; }
+            .footer-content { grid-template-columns: 1fr; text-align: center; }
+            .footer-col p { margin: 0 auto; }
+            .footer-bottom { flex-direction: column; align-items: center; gap: 10px; text-align: center;}
+            .nav-links { display: none; /* Em um site real, aqui entraria um menu hambúrguer */ }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-file-lines"></i> DocAssist
+        </div>
+        <nav class="nav-links">
+            <a href="#">Editais</a> 
+            
+            <a href="#">Sobre</a> 
+            
+            <a href="#">Contato</a> 
+        </nav>
+        
+        <a href="admin.html" class="btn-admin"><i class="fa-solid fa-shield-halved"></i> Admin</a>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="badge-ai">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Plataforma universitária inteligente
+            </div>
+            <h1>DocAssist</h1>
+            <p>Analise editais universitários com inteligência artificial. Encontre bolsas, programas e auxílios de forma rápida e eficiente.</p>
+            
+            <div class="hero-features">
+                <span><i class="fa-regular fa-file-pdf"></i> Análise de PDFs</span>
+                <span><i class="fa-solid fa-brain"></i> IA Integrada</span>
+                <span><i class="fa-solid fa-bolt"></i> Respostas Instantâneas</span>
+            </div>
+
+            <div class="hero-buttons">
+                <a href="#editais" class="btn-primary">Explorar Editais <i class="fa-solid fa-arrow-right"></i></a>
+                
+                <a href="admin.html" class="btn-secondary">Área Administrativa</a>
+            </div>
+        </section>
+
+        <section id="editais" class="editais-section">
+            <h2 class="section-title">Editais <span>Disponíveis</span></h2>
+            <p class="section-subtitle">Confira os editais abertos e utilize nossa IA para analisá-los de forma rápida e eficiente.</p>
+
+            <div id="cardsGrid" class="cards-grid"></div>
+
+            <div class="carousel-controls">
+                <button class="carousel-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                <div class="carousel-dots">
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                </div>
+                <button class="carousel-btn"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+
+            <div class="view-all-container">
+                <a href="#" class="btn-view-all">Ver todos os editais <i class="fa-regular fa-file-lines"></i></a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+    // Polling: carrega editais do backend em http://localhost:3000/api/editais e atualiza a grid a cada 5s
+    (function(){
+        const API_BASE = 'http://localhost:3000';
+        const grid = document.getElementById('cardsGrid');
+        if(!grid) return;
+        // If backend is available, prefer it; otherwise use IndexedDB local storage.
+        function openDB(){
+          return new Promise((resolve,reject)=>{
+            const req = indexedDB.open('docassist-db',1);
+            req.onupgradeneeded = ()=>{
+              const db = req.result;
+              if(!db.objectStoreNames.contains('editais')) db.createObjectStore('editais',{keyPath:'id'});
+            };
+            req.onsuccess = ()=> resolve(req.result);
+            req.onerror = ()=> reject(req.error);
+          });
+        }
+        async function idbGetAll(){
+          const db = await openDB();
+          return new Promise((resolve,reject)=>{
+            const r = db.transaction('editais').objectStore('editais').getAll();
+            r.onsuccess = ()=> resolve(r.result.reverse());
+            r.onerror = ()=> reject(r.error);
+          });
+        }
+
+        async function load(){
+            // try backend first
+            try{
+                const r = await fetch(API_BASE + '/api/editais');
+                if(r.ok){
+                    const list = await r.json();
+                    renderList(list);
+                    return;
+                }
+            }catch(e){ /* ignore */ }
+
+            // fallback to IDB
+            try{
+                const list = await idbGetAll();
+                renderList(list);
+            }catch(e){ /* keep static */ }
+        }
+
+        function renderList(list){
+            if(!Array.isArray(list) || list.length===0){
+                grid.innerHTML = '<div class="small">Nenhum edital disponível.</div>';
+                return;
+            }
+            grid.innerHTML = '';
+            list.forEach(item=>{
+                const status = item.deadline && new Date(item.deadline) < new Date() ? 'Encerrado' : 'Aberto';
+                const tagClass = (item.category||'').toLowerCase().includes('pós') ? 'blue' : (item.category||'').toLowerCase().includes('aux') ? 'yellow' : 'green';
+                const card = document.createElement('a');
+                card.className = 'card';
+                let href = item.path || '#';
+                if(item.blob){ try{ href = URL.createObjectURL(item.blob); }catch(e){ href = '#'; } }
+                if(!href.startsWith('http') && !href.startsWith('blob:')) href = API_BASE + href;
+                card.href = href;
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="tag ${tagClass}">${item.category || 'Geral'}</span>
+                        <span class="status">${status}</span>
+                    </div>
+                    <h3>${item.title || item.originalName || 'Edital'}</h3>
+                    <p class="small">${item.summary || ''}</p>
+                    <div class="card-date"><i class="fa-regular fa-calendar"></i> Prazo: ${item.deadline || '-'}</div>
+                    <div class="btn-card">${status === 'Aberto' ? 'Ver Edital' : 'Edital Encerrado'}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        load();
+        setInterval(load,5000);
+    })();
+    </script>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <i class="fa-solid fa-file-lines"></i> DocAssist
+                </div>
+                <p>Plataforma universitária para análise inteligente de editais. Facilitando o acesso a bolsas, programas de pós-graduação e auxílios estudantis.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Navegação</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Início</a></li>
+                    <li><a href="#">Editais</a></li>
+                    <li><a href="#">Área Administrativa</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contato</h4>
+                <ul class="footer-links">
+                    <li><a href="mailto:contato@docassist.edu"><i class="fa-regular fa-envelope"></i> contato@docassist.edu</a></li>
+                    <li><a href="#"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>2026 DocAssist. Todos os direitos reservados.</div>
+            <div>Desenvolvido com inteligência artificial</div>
+        </div>
+    </footer>
+
+</body>
+</html>
