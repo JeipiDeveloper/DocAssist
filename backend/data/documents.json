@@ -1,18 +1,1 @@
-[
-  {
-    "id": "1779575695597",
-    "name": "Outro edital",
-    "summary": "O documento apresenta a lista de estudantes e professores classificados e aprovados para o programa de intercâmbio \"Do Piauí para o Mundo\" (Edição 2026), dividido pelas modalidades de TI e Empreendedorismo. A lista detalha a posição de classificação, a escola, o município, a GRE e os nomes dos integrantes de cada equipe.",
-    "processing": false,
-    "fileUrl": "backend\\uploads\\1779575695596-84-editais-05-05-2026-08-42-42.pdf",
-    "createdAt": "2026-05-23T22:34:55.597Z"
-  },
-  {
-    "id": "1779579931528",
-    "name": "Piaui para o mundo",
-    "summary": "O Edital SEDUC-PI/GSE Nº 16/2026 regulamenta o Programa “Do Piauí para o Mundo” (Edição 2026), que oferece 500 vagas de intercâmbio (380 internacionais e 120 nacionais) para estudantes e professores da rede pública estadual do Piauí, incluindo ensino médio, UESPI e PIT. \n\nO processo seletivo é dividido em cinco trilhas: Tecnologia da Informação (TI), Empreendedorismo, Mérito Acadêmico, Professores e Gestores de Excelência, e Educação Superior. A seleção envolve etapas de inscrição, provas objetivas de conhecimentos específicos e inglês, elaboração de projetos inovadores, Hackathons/Ideathons e uma maratona final de \"Pitchs\". As despesas de viagem e permanência serão custeadas pela SEDUC-PI.",
-    "processing": false,
-    "fileUrl": "backend\\uploads\\1779579931517-35-editais-30-03-2026-18-24-34 (2).pdf",
-    "createdAt": "2026-05-23T23:45:31.528Z"
-  }
-]
+[]

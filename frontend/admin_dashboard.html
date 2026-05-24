@@ -10,15 +10,17 @@
 </head>
 <body class="page-admin-dashboard">
   <header class="site-header">
-    <div class="brand">
-      <div class="brand-icon">
-        <i class="fa-solid fa-file-lines"></i>
+    <a href="site_ofc.html" class="brand-link">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-file-lines"></i>
+        </div>
+        <div class="brand-copy">
+          <div class="brand-title">DocAssist</div>
+          <div class="brand-subtitle">Área Administrativa</div>
+        </div>
       </div>
-      <div class="brand-copy">
-        <div class="brand-title">DocAssist</div>
-        <div class="brand-subtitle">Área Administrativa</div>
-      </div>
-    </div>
+    </a>
     <nav>
       <a href="admin.html" class="link-back">Sair</a>
     </nav>
@@ -49,6 +51,17 @@
           <button type="submit" class="btn">Enviar</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div id="deleteConfirmModal" class="modal">
+    <div class="panel">
+      <h4>Excluir documento</h4>
+      <p id="deleteConfirmMessage" class="small"></p>
+      <div class="modal-actions">
+        <button type="button" id="cancelDelete" class="link-back">Cancelar</button>
+        <button type="button" id="confirmDelete" class="btn">Excluir</button>
+      </div>
     </div>
   </div>
 

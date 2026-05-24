@@ -2,7 +2,6 @@ const API_BASE = 'http://localhost:3000';
 const params = new URLSearchParams(window.location.search);
 const documentId = params.get('id');
 
-const statusPill = document.getElementById('statusPill');
 const documentTitle = document.getElementById('documentTitle');
 const documentDate = document.getElementById('documentDate');
 const downloadLink = document.getElementById('downloadLink');
@@ -63,8 +62,6 @@ function setLoadingState(message) {
 async function loadDocument() {
     if (!documentId) {
         setLoadingState('Nenhum edital foi selecionado. Volte ao site e abra um edital para iniciar o chat.');
-        statusPill.textContent = 'Edital não informado';
-        statusPill.className = 'status-pill';
         return;
     }
 
@@ -79,8 +76,6 @@ async function loadDocument() {
 
         if (!current) {
             setLoadingState('Não foi possível localizar este edital no backend. Tente voltar ao site e clicar em outro edital.');
-            statusPill.textContent = 'Edital não encontrado';
-            statusPill.className = 'status-pill';
             return;
         }
 
@@ -89,16 +84,10 @@ async function loadDocument() {
         downloadLink.href = `${API_BASE}/documents/${current.id}/download`;
 
         if (current.processing) {
-            statusPill.textContent = 'Processando resumo';
-            statusPill.className = 'status-pill processing';
             summaryText.textContent = 'O resumo ainda está sendo gerado. Tente novamente em alguns instantes.';
         } else if (current.summary) {
-            statusPill.textContent = 'Resumo disponível';
-            statusPill.className = 'status-pill ready';
             summaryText.textContent = current.summary;
         } else {
-            statusPill.textContent = 'Resumo indisponível';
-            statusPill.className = 'status-pill';
             summaryText.textContent = 'Ainda não há resumo disponível para este edital.';
         }
 
@@ -107,8 +96,6 @@ async function loadDocument() {
     } catch (error) {
         console.error(error);
         setLoadingState('Não foi possível conectar ao backend do DocAssist. Verifique se o servidor está rodando em http://localhost:3000.');
-        statusPill.textContent = 'Falha ao carregar';
-        statusPill.className = 'status-pill';
     }
 }
 

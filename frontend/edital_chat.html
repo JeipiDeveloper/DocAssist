@@ -12,15 +12,17 @@
 </head>
 <body class="page-chat">
     <header class="site-header">
-        <div class="brand">
-            <div class="brand-icon">
-                <i class="fa-solid fa-file-lines"></i>
+        <a href="site_ofc.html" class="brand-link">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-file-lines"></i>
+                </div>
+                <div class="brand-copy">
+                    <div class="brand-title">DocAssist</div>
+                    <div class="brand-subtitle">Chatbot do edital selecionado</div>
+                </div>
             </div>
-            <div class="brand-copy">
-                <div class="brand-title">DocAssist</div>
-                <div class="brand-subtitle">Chatbot do edital selecionado</div>
-            </div>
-        </div>
+        </a>
         <a href="site_ofc.html" class="back-link">
             <i class="fa-solid fa-arrow-left"></i>
             Voltar ao site
@@ -30,8 +32,6 @@
     <main class="page-shell">
         <div class="layout">
             <aside class="panel document-panel">
-                <span class="status-pill" id="statusPill">Carregando edital...</span>
-
                 <div>
                     <h1 id="documentTitle">Carregando...</h1>
                     <div class="meta-row" id="metaRow">
@@ -45,7 +45,7 @@
                 </a>
 
                 <div class="summary-card" id="summaryCard">
-                    <h2>Resumo do edital</h2>
+                    <h2>Resumo gerado por IA</h2>
                     <p id="summaryText">Carregando resumo...</p>
                 </div>
             </aside>

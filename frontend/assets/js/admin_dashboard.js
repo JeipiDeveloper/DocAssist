@@ -1,9 +1,15 @@
 const API_BASE = 'http://localhost:3000';
 const listEl = document.getElementById('list');
 const modal = document.getElementById('modal');
+const deleteConfirmModal = document.getElementById('deleteConfirmModal');
 const btnUpload = document.getElementById('btnUpload');
 const cancel = document.getElementById('cancel');
+const cancelDelete = document.getElementById('cancelDelete');
+const confirmDelete = document.getElementById('confirmDelete');
+const deleteConfirmMessage = document.getElementById('deleteConfirmMessage');
 const uploadForm = document.getElementById('uploadForm');
+
+let pendingDelete = null;
 
 async function fetchDocuments() {
   const response = await fetch(`${API_BASE}/documents`);
@@ -94,15 +100,12 @@ function render(list) {
 
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
-    deleteButton.className = 'link-back';
+    deleteButton.className = 'link-back delete-button';
     deleteButton.textContent = 'Excluir';
-    deleteButton.addEventListener('click', async () => {
-      try {
-        await deleteDocument(item.id);
-        await load();
-      } catch (error) {
-        alert(error.message);
-      }
+    deleteButton.addEventListener('click', () => {
+      pendingDelete = item;
+      deleteConfirmMessage.textContent = `Deseja mesmo excluir o documento "${item.name}"?`;
+      deleteConfirmModal.classList.add('open');
     });
 
     actions.append(openLink, deleteButton);
@@ -125,6 +128,26 @@ setInterval(load, 5000);
 
 btnUpload.addEventListener('click', () => modal.classList.add('open'));
 cancel.addEventListener('click', () => modal.classList.remove('open'));
+
+cancelDelete.addEventListener('click', () => {
+  pendingDelete = null;
+  deleteConfirmModal.classList.remove('open');
+});
+
+confirmDelete.addEventListener('click', async () => {
+  if (!pendingDelete) {
+    return;
+  }
+
+  try {
+    await deleteDocument(pendingDelete.id);
+    deleteConfirmModal.classList.remove('open');
+    pendingDelete = null;
+    await load();
+  } catch (error) {
+    alert(error.message);
+  }
+});
 
 uploadForm.addEventListener('submit', async (event) => {
   event.preventDefault();
