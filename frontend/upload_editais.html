@@ -5,35 +5,22 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Upload de Editais — DocAssist</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root{--bg:#060913;--card:#0f1523;--text:#fff;--muted:#9ca3af;--accent:#3b82f6;--border:#1e293b}
-        *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif}
-        body{background:var(--bg);color:var(--text);min-height:100vh}
-        header{display:flex;justify-content:space-between;align-items:center;padding:18px 5%;border-bottom:1px solid var(--border)}
-        .container{max-width:900px;margin:40px auto;padding:20px}
-        .card{background:var(--card);border:1px solid var(--border);padding:20px;border-radius:12px}
-        label{display:block;margin-top:12px;color:var(--muted)}
-        input[type=text], input[type=date], select, input[type=file]{width:100%;padding:10px;margin-top:6px;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--text)}
-        .actions{display:flex;gap:12px;margin-top:16px}
-        .btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
-        .link-back{background:transparent;border:1px solid var(--border);padding:8px 12px;border-radius:8px;color:var(--muted);text-decoration:none}
-        .hint{color:var(--muted);font-size:0.9rem;margin-top:8px}
-        /* Form hidden unless the fragment #allowed is present */
-        #allowed { display: none; }
-        #allowed:target { display: block; }
-        .notice { padding:20px; border-radius:12px; background:rgba(255,255,255,0.02); border:1px solid var(--border); }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/app.css">
 </head>
-<body>
+<body class="page-upload">
     <header>
-        <div class="logo" style="font-weight:700"><span style="color:var(--accent)">DocAssist</span></div>
+        <div class="logo">
+            <i class="fa-solid fa-file-lines"></i>
+            DocAssist
+        </div>
         <nav>
             <a href="admin.html" class="link-back">Voltar à Área Admin</a>
         </nav>
     </header>
 
-    <main class="container">
-        <div class="card">
+    <main class="upload-container">
+        <div class="upload-card">
             <h2>Upload de Editais</h2>
             <p class="hint">A página de upload só exibe o formulário quando acessada a partir da Área Administrativa (link com fragmento <code>#allowed</code>).</p>
 
@@ -41,7 +28,7 @@
                 <strong>Atenção:</strong> Se você abriu esta página diretamente, o formulário estará oculto. Volte para a <a href="admin.html">Área Administrativa</a> e clique em "Ir para Uploads".
             </div>
 
-            <div id="allowed" style="margin-top:16px">
+            <div id="allowed">
                 <form id="uploadForm">
                     <label for="name">Título do Edital</label>
                     <input id="name" name="name" type="text" placeholder="Título do edital" required>
@@ -49,7 +36,7 @@
                     <label for="pdf">Arquivo PDF</label>
                     <input id="pdf" name="pdf" type="file" accept="application/pdf" required>
 
-                    <div class="actions">
+                    <div class="upload-actions">
                         <button type="submit" class="btn" id="submitBtn">Enviar</button>
                         <a href="admin.html#dashboard" class="link-back">Voltar ao Painel</a>
                     </div>
@@ -60,52 +47,6 @@
         </div>
     </main>
 
-    <script>
-        const API_BASE = 'http://localhost:3000';
-        const form = document.getElementById('uploadForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const statusMessage = document.getElementById('statusMessage');
-
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            const name = document.getElementById('name').value.trim();
-            const pdf = document.getElementById('pdf').files[0];
-
-            if (!pdf) {
-                statusMessage.textContent = 'Selecione um arquivo PDF.';
-                return;
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Enviando...';
-            statusMessage.textContent = 'Enviando o arquivo para o backend...';
-
-            try {
-                const formData = new FormData();
-                formData.append('name', name);
-                formData.append('pdf', pdf);
-
-                const response = await fetch(`${API_BASE}/upload`, {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                const data = await response.json().catch(() => ({}));
-
-                if (!response.ok) {
-                    throw new Error(data.message || 'Não foi possível enviar o edital.');
-                }
-
-                statusMessage.textContent = `Upload concluído: ${data.document?.name || name}. O resumo será gerado automaticamente.`;
-                form.reset();
-            } catch (error) {
-                statusMessage.textContent = error.message || 'Erro ao enviar o edital.';
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Enviar';
-            }
-        });
-    </script>
+    <script src="assets/js/upload.js"></script>
 </body>
 </html>

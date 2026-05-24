@@ -5,41 +5,30 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin - DocAssist</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{--bg:#060913;--card:#0f1523;--text:#fff;--muted:#9ca3af;--accent:#3b82f6;--border:#1e293b}
-    *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif}
-    body{background:var(--bg);color:var(--text);min-height:100vh}
-    header{display:flex;justify-content:space-between;align-items:center;padding:18px 5%;border-bottom:1px solid var(--border)}
-    .container{max-width:1000px;margin:36px auto;padding:20px}
-    .card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:10px}
-    .grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
-    .btn{background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
-    .link-back{background:transparent;border:1px solid var(--border);padding:8px 12px;border-radius:8px;color:var(--muted);text-decoration:none}
-    .list-item{padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.02);margin-bottom:8px;display:flex;justify-content:space-between;gap:12px}
-    .small{color:var(--muted);font-size:0.9rem}
-    /* modal */
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);}
-    .modal.open{display:flex}
-    .modal .panel{background:var(--card);padding:16px;border-radius:10px;width:420px}
-    label{display:block;margin-top:8px;color:var(--muted)}
-    input[type=text], input[type=file]{width:100%;padding:8px;margin-top:6px;border-radius:6px;background:transparent;border:1px solid var(--border);color:var(--text)}
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/app.css">
 </head>
-<body>
-  <header>
-    <div style="font-weight:700">DocAssist — Área Administrativa</div>
+<body class="page-admin-dashboard">
+  <header class="site-header">
+    <div class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-file-lines"></i>
+      </div>
+      <div class="brand-copy">
+        <div class="brand-title">DocAssist</div>
+        <div class="brand-subtitle">Área Administrativa</div>
+      </div>
+    </div>
     <nav>
       <a href="admin.html" class="link-back">Sair</a>
     </nav>
   </header>
 
-  <main class="container">
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+  <main class="admin-dashboard-container">
+    <div class="admin-dashboard-card">
+      <div class="admin-dashboard-header">
         <h3>Documentos publicados</h3>
-        <div>
-          <button id="btnUpload" class="btn">Novo Upload</button>
-        </div>
+        <button id="btnUpload" class="btn">Novo Upload</button>
       </div>
 
       <div id="list" class="small"></div>
@@ -55,7 +44,7 @@
         <input id="title" name="name" type="text" required>
         <label for="file">Arquivo PDF</label>
         <input id="file" name="file" type="file" accept="application/pdf" required>
-        <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+        <div class="modal-actions">
           <button type="button" id="cancel" class="link-back">Cancelar</button>
           <button type="submit" class="btn">Enviar</button>
         </div>
@@ -63,139 +52,6 @@
     </div>
   </div>
 
-  <script>
-    const API_BASE = 'http://localhost:3000';
-    const listEl = document.getElementById('list');
-    const modal = document.getElementById('modal');
-    const btnUpload = document.getElementById('btnUpload');
-    const cancel = document.getElementById('cancel');
-    const uploadForm = document.getElementById('uploadForm');
-
-    async function fetchDocuments(){
-      const response = await fetch(`${API_BASE}/documents`);
-      if(!response.ok){
-        throw new Error('Não foi possível carregar os documentos.');
-      }
-      return response.json();
-    }
-
-    async function uploadDocument(name, file){
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('pdf', file);
-
-      const response = await fetch(`${API_BASE}/upload`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      if(!response.ok){
-        throw new Error(data.message || 'Não foi possível enviar o documento.');
-      }
-
-      return data;
-    }
-
-    async function deleteDocument(id){
-      const response = await fetch(`${API_BASE}/upload/${id}`, {
-        method: 'DELETE',
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      if(!response.ok){
-        throw new Error(data.message || 'Não foi possível remover o documento.');
-      }
-
-      return data;
-    }
-
-    function render(list){
-      if(!Array.isArray(list) || list.length === 0){
-        listEl.innerHTML = '<div class="small">Nenhum documento encontrado.</div>';
-        return;
-      }
-
-      listEl.innerHTML = '';
-
-      list.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-
-        const statusText = item.processing
-          ? 'Resumo em processamento'
-          : (item.summary || 'Resumo ainda não disponível');
-
-        const downloadUrl = `${API_BASE}/documents/${item.id}/download`;
-
-        div.innerHTML = `
-          <div>
-            <div style="font-weight:600">${item.name}</div>
-            <div class="small">${statusText}</div>
-            <div class="small" style="margin-top:6px">${new Date(item.createdAt).toLocaleString()}</div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-            <a class="btn" href="${downloadUrl}" target="_blank" rel="noreferrer">Abrir PDF</a>
-            <button type="button" class="link-back" data-delete-id="${item.id}">Excluir</button>
-          </div>
-        `;
-
-        div.querySelector('[data-delete-id]').addEventListener('click', async () => {
-          try {
-            await deleteDocument(item.id);
-            await load();
-          } catch (error) {
-            alert(error.message);
-          }
-        });
-
-        listEl.appendChild(div);
-      });
-    }
-
-    async function load(){
-      try {
-        const data = await fetchDocuments();
-        render(data);
-      } catch (error) {
-        listEl.innerHTML = `<div class="small">${error.message}</div>`;
-      }
-    }
-
-    load();
-    setInterval(load, 5000);
-
-    btnUpload.addEventListener('click', () => modal.classList.add('open'));
-    cancel.addEventListener('click', () => modal.classList.remove('open'));
-
-    uploadForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const name = document.getElementById('title').value.trim();
-      const fileInput = document.getElementById('file');
-      const file = fileInput.files[0];
-
-      if (!name) {
-        alert('Preencha o nome do PDF');
-        return;
-      }
-
-      if (!file) {
-        alert('Selecione um PDF');
-        return;
-      }
-
-      try {
-        await uploadDocument(name, file);
-        modal.classList.remove('open');
-        uploadForm.reset();
-        await load();
-      } catch (error) {
-        alert(error.message);
-      }
-    });
-  </script>
+  <script src="assets/js/admin_dashboard.js"></script>
 </body>
 </html>
