@@ -36,7 +36,7 @@
                         Enviado em ${formatDate(item.createdAt)}
                     </div>
 
-                    <a class="carousel-link" href="edital_chat.html?id=${item.id}">
+                    <a class="carousel-link" href="chatbot.html?id=${item.id}">
                         Abrir chatbot
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>

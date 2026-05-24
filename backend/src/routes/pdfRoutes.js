@@ -36,7 +36,7 @@ router.post("/upload", upload.single("pdf"), async (req, res) => {
         // Processar resumo assincronamente (sem await)
         gerarRespostaDoDocumento(
             req.file.path,
-            "Faça um resumo deste documento em um parágrafo."
+            "Faça um resumo deste documento em um parágrafo muito curto."
         )
             .then((summary) => {
                 atualizarResumo(documento.id, summary);
