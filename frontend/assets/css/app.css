@@ -389,34 +389,47 @@ body.page-admin {
 }
 
 .admin-container {
-    max-width: 1000px;
-    margin: 48px auto;
-    padding: 20px;
+    max-width: 760px;
+    margin: 32px auto;
+    padding: 0 16px;
 }
 
 .admin-card {
     background: var(--admin-card-bg);
     border: 1px solid var(--admin-border);
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: 16px;
+    padding: 22px;
+}
+
+.compact-admin-card {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.admin-copy-centered {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .admin-title {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .admin-subtitle {
-    margin: 8px 0 28px;
+    margin: 0 0 20px;
     display: block;
-    line-height: 1.6;
+    line-height: 1.5;
+    max-width: 420px;
 }
 
 .login-form {
-    max-width: 420px;
+    max-width: 360px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
 .login-form label,
@@ -424,6 +437,7 @@ body.page-admin {
 .upload-page label {
     font-size: 0.9rem;
     color: var(--text-secondary);
+    text-align: left;
 }
 
 .login-form input,
@@ -432,10 +446,16 @@ body.page-admin {
 .upload-page select {
     background: transparent;
     border: 1px solid var(--admin-border);
-    padding: 10px;
-    border-radius: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
     color: var(--text-primary);
     width: 100%;
+}
+
+.form-actions {
+    margin-top: 4px;
+    display: flex;
+    justify-content: center;
 }
 
 .dashboard-shell {
