@@ -99,7 +99,16 @@ function createBubble(role, text, extraClass = '') {
     const bubble = document.createElement('div');
     bubble.className = `message-bubble ${extraClass}`;
 
-    if (role === 'ai') {
+    if (extraClass.includes('loading')) {
+        bubble.innerHTML = `
+            <span class="thinking-text">${escapeHTML(text)}</span>
+            <span class="thinking-dots" aria-hidden="true">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </span>
+        `;
+    } else if (role === 'ai') {
         bubble.innerHTML = renderMarkdown(text);
     } else {
         bubble.innerHTML = escapeHTML(text).replace(/\n/g, '<br>');
@@ -108,6 +117,38 @@ function createBubble(role, text, extraClass = '') {
     row.appendChild(bubble);
     chatHistory.appendChild(row);
     chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+
+function renderFakeStream(answer) {
+    const row = document.createElement('div');
+    row.className = 'message-row ai';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.textContent = '';
+
+    row.appendChild(bubble);
+    chatHistory.appendChild(row);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+
+    let index = 0;
+
+    const step = () => {
+        const chunkSize = Math.max(1, Math.ceil((answer.length - index) / 24));
+        index = Math.min(answer.length, index + chunkSize);
+        bubble.textContent = answer.slice(0, index);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+        if (index < answer.length) {
+            window.setTimeout(step, 22);
+            return;
+        }
+
+        bubble.innerHTML = renderMarkdown(answer);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    };
+
+    step();
 }
 
 function renderSuggestions() {
@@ -181,7 +222,7 @@ async function sendQuestion(event) {
     createBubble('user', prompt);
     promptInput.value = '';
     sendButton.disabled = true;
-    createBubble('ai', 'Consultando o documento...', 'loading');
+    createBubble('ai', 'Analisando', 'loading');
 
     try {
         const response = await fetch(`${API_BASE}/documents/${documentId}/ask`, {
@@ -196,7 +237,7 @@ async function sendQuestion(event) {
         const answer = payload?.answer || payload?.message || 'Não foi possível gerar uma resposta agora.';
 
         chatHistory.removeChild(chatHistory.lastElementChild);
-        createBubble('ai', answer);
+        renderFakeStream(answer);
     } catch (error) {
         console.error(error);
         chatHistory.removeChild(chatHistory.lastElementChild);
