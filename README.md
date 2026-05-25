@@ -1,15 +1,44 @@
-# DocAssist — Site Estático
+# DocAssist
 
-Pequeno site estático de exemplo para a plataforma DocAssist.
+DocAssist é um projeto para upload, organização e consulta de documentos acadêmicos em formato PDF usando IA.
 
-Conteúdo:
-- `site_ofc.html` — Página pública (principal).
-- `admin.html` — Área administrativa front-end de exemplo (sem autenticação real).
+## O que ele faz
 
-Como abrir:
-1. Abra os arquivos HTML no navegador (duplo-clique ou `Live Server`).
+- Faz upload de documentos PDF
+- Armazena os documentos em um backend em Node.js
+- Gera um resumo com IA
+- Permite fazer perguntas sobre o edital pelo chatbot
+- Exibe uma interface web simples para navegação
 
-Próximos passos sugeridos:
-- Implementar backend e autenticação real.
-- Persistir editais em banco de dados.
-- Adicionar upload seguro de PDFs.
+## Estrutura básica
+
+- `backend/` — servidor Express e serviços da aplicação
+- `frontend/` — páginas HTML, CSS e JavaScript
+- `package.json` — scripts de execução
+
+## Pré-requisitos
+
+- Node.js instalado
+- npm instalado
+
+## Como rodar
+
+1. Instale as dependências:
+
+```bash
+npm install
+```
+
+2. Inicie o servidor:
+
+```bash
+npm start
+```
+
+3. Abra o frontend no navegador:
+
+- `frontend/site_ofc.html` para visualizar a home
+
+## Atenção
+
+- Certifique-se de que o servidor esteja rodando antes de abrir as páginas
