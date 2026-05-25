@@ -817,6 +817,37 @@ body.page-chat {
     border: 1px solid rgba(59, 130, 246, 0.14);
 }
 
+.page-chat .message-bubble p {
+    margin: 0;
+}
+
+.page-chat .message-bubble p + p {
+    margin-top: 0.75rem;
+}
+
+.page-chat .message-bubble ul {
+    margin: 0.75rem 0 0;
+    padding-left: 1.2rem;
+}
+
+.page-chat .message-bubble li + li {
+    margin-top: 0.35rem;
+}
+
+.page-chat .message-bubble code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+    background: rgba(59, 130, 246, 0.12);
+    color: #dbeafe;
+    padding: 0.1rem 0.35rem;
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+
+.page-chat .message-bubble a {
+    color: #93c5fd;
+    text-decoration: underline;
+}
+
 .page-chat .message-row.user .message-bubble {
     background: rgba(59, 130, 246, 0.16);
     border-color: rgba(59, 130, 246, 0.24);

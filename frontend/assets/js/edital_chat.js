@@ -25,13 +25,85 @@ function formatDate(value) {
     return date.toLocaleString('pt-BR');
 }
 
+function escapeHTML(value) {
+    return value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function renderInlineMarkdown(value) {
+    let rendered = value;
+
+    rendered = rendered.replace(/`([^`]+)`/g, '<code>$1</code>');
+    rendered = rendered.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>');
+    rendered = rendered.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    rendered = rendered.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+    rendered = rendered.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    rendered = rendered.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+    return rendered;
+}
+
+function renderMarkdown(value) {
+    const escaped = escapeHTML(value).replace(/\r\n/g, '\n');
+    const lines = escaped.split('\n');
+    const pieces = [];
+    let inList = false;
+
+    lines.forEach((line) => {
+        const trimmed = line.trim();
+
+        if (!trimmed) {
+            if (inList) {
+                pieces.push('</ul>');
+                inList = false;
+            }
+            pieces.push('<br>');
+            return;
+        }
+
+        const bulletMatch = trimmed.match(/^[-*]\s+(.+)$/);
+
+        if (bulletMatch) {
+            if (!inList) {
+                pieces.push('<ul>');
+                inList = true;
+            }
+
+            pieces.push(`<li>${renderInlineMarkdown(bulletMatch[1])}</li>`);
+            return;
+        }
+
+        if (inList) {
+            pieces.push('</ul>');
+            inList = false;
+        }
+
+        pieces.push(`<p>${renderInlineMarkdown(line)}</p>`);
+    });
+
+    if (inList) {
+        pieces.push('</ul>');
+    }
+
+    return pieces.join('');
+}
+
 function createBubble(role, text, extraClass = '') {
     const row = document.createElement('div');
     row.className = `message-row ${role}`;
 
     const bubble = document.createElement('div');
     bubble.className = `message-bubble ${extraClass}`;
-    bubble.textContent = text;
+
+    if (role === 'ai') {
+        bubble.innerHTML = renderMarkdown(text);
+    } else {
+        bubble.innerHTML = escapeHTML(text).replace(/\n/g, '<br>');
+    }
 
     row.appendChild(bubble);
     chatHistory.appendChild(row);

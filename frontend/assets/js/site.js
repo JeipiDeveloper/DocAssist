@@ -37,7 +37,7 @@
                     </div>
 
                     <a class="carousel-link" href="chatbot.html?id=${item.id}">
-                        Abrir chatbot
+                        Consultar edital
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
