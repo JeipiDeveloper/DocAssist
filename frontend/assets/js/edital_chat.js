@@ -130,6 +130,7 @@ function renderFakeStream(answer) {
     row.appendChild(bubble);
     chatHistory.appendChild(row);
     chatHistory.scrollTop = chatHistory.scrollHeight;
+    row.scrollIntoView({ block: 'end' });
 
     let index = 0;
 
@@ -138,14 +139,16 @@ function renderFakeStream(answer) {
         index = Math.min(answer.length, index + chunkSize);
         bubble.textContent = answer.slice(0, index);
         chatHistory.scrollTop = chatHistory.scrollHeight;
+        row.scrollIntoView({ block: 'end' });
 
         if (index < answer.length) {
-            window.setTimeout(step, 22);
+            window.setTimeout(step, 33);
             return;
         }
 
         bubble.innerHTML = renderMarkdown(answer);
         chatHistory.scrollTop = chatHistory.scrollHeight;
+        row.scrollIntoView({ block: 'end' });
     };
 
     step();
