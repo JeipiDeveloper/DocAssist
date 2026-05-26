@@ -129,8 +129,7 @@
         });
 
         renderDots(list.length);
-        currentIndex = 0;
-        goToSlide(0);
+        goToSlide(currentIndex);
         prevBtn.disabled = false;
         nextBtn.disabled = false;
         startAutoPlay();
