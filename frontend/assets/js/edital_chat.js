@@ -13,9 +13,9 @@ const promptInput = document.getElementById('promptInput');
 const sendButton = document.getElementById('sendButton');
 
 const suggestions = [
-    'Quem pode se inscrever nesse programa?',
-    'Quais são os principais requisitos e documentos necessários?',
-    'Quais são os prazos e etapas importantes deste processo?'
+    'Quem pode se inscrever?',
+    'Requisitos essenciais?',
+    'Prazos principais?'
 ];
 
 function formatDate(value) {
