@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "id": "1779753686235",
+    "name": "Edital Programa Do Piauí para o Mundo - Edição 2026",
+    "summary": "O Edital SEDUC-PI/GSE Nº 16/2026 regulamenta o processo seletivo do Programa “Do Piauí para o Mundo” (Edição 2026), que oferece 500 vagas de intercâmbio nacional e internacional para estudantes e professores do ensino médio e superior (UESPI/PIT). A seleção ocorre por meio de trilhas específicas (TI, Empreendedorismo, Mérito Acadêmico e Educação Superior), envolvendo etapas de prova objetiva, submissão de projetos inovadores, Hackathon/Ideathon e a Batalha de Pitchs.",
+    "processing": false,
+    "fileUrl": "backend\\uploads\\1779753686228-Edital Programa Do PiauÃ­ para o Mundo - EdiÃ§Ã£o 2026.pdf",
+    "createdAt": "2026-05-26T00:01:26.235Z"
+  },
+  {
+    "id": "1779753728673",
+    "name": "Edital Auxilio Alimentação UESPI 2026",
+    "summary": "O Edital nº 10/2026 da UESPI seleciona 800 bolsistas em situação de vulnerabilidade socioeconômica para o Programa Auxílio Alimentação Estudantil (Modalidade Pecuniária), com pagamento mensal de R$ 300,00. As inscrições ocorrem de 14 a 28 de abril de 2026 via SIGAA, exigindo matrícula em cursos presenciais e renda familiar per capita de até meio salário mínimo.",
+    "processing": false,
+    "fileUrl": "backend\\uploads\\1779753728671-Edital Auxilio AlimentaÃ§Ã£o UESPI 2026.pdf",
+    "createdAt": "2026-05-26T00:02:08.673Z"
+  },
+  {
+    "id": "1779753758578",
+    "name": "Bolsa Inclusão Social para Matemática no Campus de Oeiras",
+    "summary": "O Edital nº PREX/DAEC/47/2026 da UESPI seleciona um discente do curso de Licenciatura em Matemática do Campus de Oeiras para atuar como bolsista no Programa Inclusão Social, oferecendo R$ 700,00 mensais por seis meses para prestar assistência individualizada a alunos com deficiência ou altas habilidades, com carga horária de 20h semanais e seleção baseada em documentação, análise socioeconômica e entrevista.",
+    "processing": false,
+    "fileUrl": "backend\\uploads\\1779753758576-Bolsa InclusÃ£o Social para MatemÃ¡tica no Campus de Oeiras.pdf",
+    "createdAt": "2026-05-26T00:02:38.578Z"
+  }
+]
