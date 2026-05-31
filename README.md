@@ -39,6 +39,16 @@ npm start
 
 - `frontend/site_ofc.html` para visualizar a home
 
+## Área administrativa
+
+A página `frontend/admin.html` exige login para acessar o painel (`admin_dashboard.html`),
+de onde é possível enviar e excluir documentos.
+
+- As credenciais são definidas pelas variáveis de ambiente `ADMIN_USER` e `ADMIN_PASSWORD`
+  (padrão `admin` / `admin`). Veja `.env.example`.
+- Após o login, um token de sessão é guardado no navegador e enviado nas operações de
+  upload e exclusão. As rotas `POST /upload` e `DELETE /upload/:id` exigem esse token.
+
 ## Atenção
 
 - Certifique-se de que o servidor esteja rodando antes de abrir as páginas

@@ -230,4 +230,47 @@ Esta rota aguarda a resposta da IA antes de retornar ao frontend.
 
 - O campo `fileUrl` é um caminho local no servidor e não deve ser usado como URL pública sem expor o diretório.
 - Se quiser entregar o arquivo para download no frontend, é necessário adicionar rota de download/servir arquivos estáticos no backend.
-- Atualmente, o backend não tem autenticação.
+
+---
+
+## Autenticação da área administrativa
+
+As rotas de escrita (`POST /upload` e `DELETE /upload/:id`) exigem um token de sessão emitido no login. As rotas de leitura (`GET /documents`, `GET /documents/:id/download`, `POST /documents/:id/ask`) permanecem públicas.
+
+### Credenciais
+Definidas por variáveis de ambiente (veja `.env.example`):
+
+```env
+ADMIN_USER=admin
+ADMIN_PASSWORD=admin
+AUTH_SECRET=<segredo_para_assinar_o_token>
+```
+
+O token é assinado com HMAC-SHA256 usando `AUTH_SECRET`, expira em 8 horas e não depende de dependências externas.
+
+### 5. Login do admin
+**POST** `/admin/login`
+
+- Corpo JSON: `{ "user": "...", "password": "..." }`
+- Resposta `200`: `{ "message": "Login realizado com sucesso", "token": "<token>" }`
+- Resposta `401`: `{ "message": "Usuário ou senha inválidos." }`
+
+### 6. Verificar sessão
+**GET** `/admin/verify`
+
+- Header: `Authorization: Bearer <token>`
+- Resposta `200`: `{ "authenticated": true }`
+- Resposta `401`: `{ "message": "Não autorizado. Faça login para continuar." }`
+
+### Uso do token nas rotas protegidas
+Envie o token no header `Authorization` das requisições de upload e exclusão:
+
+```js
+fetch('http://localhost:3000/upload', {
+  method: 'POST',
+  headers: { Authorization: `Bearer ${token}` },
+  body: formData,
+});
+```
+
+Requisições sem token (ou com token inválido/expirado) recebem `401`.

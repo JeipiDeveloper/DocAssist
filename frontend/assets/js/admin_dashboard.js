@@ -1,4 +1,45 @@
 const API_BASE = 'http://localhost:3000';
+const TOKEN_KEY = 'docassist_admin_token';
+
+function getToken() {
+  return sessionStorage.getItem(TOKEN_KEY);
+}
+
+function redirectToLogin() {
+  sessionStorage.removeItem(TOKEN_KEY);
+  window.location.replace('admin.html');
+}
+
+function authHeaders() {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+async function ensureAuthenticated() {
+  const token = getToken();
+
+  if (!token) {
+    redirectToLogin();
+    return false;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/admin/verify`, {
+      headers: authHeaders(),
+    });
+
+    if (!response.ok) {
+      redirectToLogin();
+      return false;
+    }
+  } catch (error) {
+    // Sem conexão com o backend: mantém a sessão e deixa o load() exibir o erro.
+    return true;
+  }
+
+  return true;
+}
+
 const listEl = document.getElementById('list');
 const modal = document.getElementById('modal');
 const deleteConfirmModal = document.getElementById('deleteConfirmModal');
@@ -28,8 +69,14 @@ async function uploadDocument(name, file) {
 
   const response = await fetch(`${API_BASE}/upload`, {
     method: 'POST',
+    headers: authHeaders(),
     body: formData,
   });
+
+  if (response.status === 401) {
+    redirectToLogin();
+    throw new Error('Sessão expirada. Faça login novamente.');
+  }
 
   const data = await response.json().catch(() => ({}));
 
@@ -43,7 +90,13 @@ async function uploadDocument(name, file) {
 async function deleteDocument(id) {
   const response = await fetch(`${API_BASE}/upload/${id}`, {
     method: 'DELETE',
+    headers: authHeaders(),
   });
+
+  if (response.status === 401) {
+    redirectToLogin();
+    throw new Error('Sessão expirada. Faça login novamente.');
+  }
 
   const data = await response.json().catch(() => ({}));
 
@@ -123,8 +176,24 @@ async function load() {
   }
 }
 
-load();
-setInterval(load, 5000);
+async function init() {
+  const authenticated = await ensureAuthenticated();
+  if (!authenticated) {
+    return;
+  }
+
+  load();
+  setInterval(load, 5000);
+}
+
+init();
+
+const logoutLink = document.getElementById('logout');
+if (logoutLink) {
+  logoutLink.addEventListener('click', () => {
+    sessionStorage.removeItem(TOKEN_KEY);
+  });
+}
 
 btnUpload.addEventListener('click', () => modal.classList.add('open'));
 cancel.addEventListener('click', () => modal.classList.remove('open'));

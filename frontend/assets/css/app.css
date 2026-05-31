@@ -460,6 +460,12 @@ body.page-admin {
     justify-content: center;
 }
 
+.login-error {
+    margin: 0;
+    color: var(--danger);
+    text-align: center;
+}
+
 .dashboard-shell {
     margin-top: 18px;
 }

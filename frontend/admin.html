@@ -36,15 +36,17 @@
         <div class="admin-card compact-admin-card">
             <div class="admin-copy-centered">
                 <h2 class="admin-title">Área Administrativa</h2>
-                <p class="small admin-subtitle">Faça o login(qualquer senha aceita para testes).</p>
+                <p class="small admin-subtitle">Faça o login para acessar o painel.</p>
             </div>
 
-            <form action="admin_dashboard.html" method="get" class="login-form" id="loginForm">
+            <form class="login-form" id="loginForm">
                 <label for="user">Usuário</label>
-                <input id="user" name="user" placeholder="admin" value="admin">
+                <input id="user" name="user" placeholder="admin" autocomplete="username">
 
                 <label for="pass">Senha</label>
-                <input id="pass" name="password" type="password" placeholder="digite qualquer senha">
+                <input id="pass" name="password" type="password" placeholder="digite sua senha" autocomplete="current-password">
+
+                <p id="loginError" class="small login-error" role="alert" hidden></p>
 
                 <div class="form-actions">
                     <button type="submit" class="btn">Entrar</button>
@@ -52,5 +54,7 @@
             </form>
         </div>
     </main>
+
+    <script src="assets/js/admin.js"></script>
 </body>
 </html>
