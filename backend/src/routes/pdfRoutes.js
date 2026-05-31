@@ -4,6 +4,7 @@ const express = require("express");
 const multer = require("multer");
 const { gerarRespostaDoDocumento } = require("../services/aiService");
 const { criarDocumento, atualizarResumo, deletarDocumento, lerDocumentos, obterDocumento } = require("../services/documentService");
+const { autenticar } = require("./authRoutes");
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/upload", upload.single("pdf"), async (req, res) => {
+router.post("/upload", autenticar, upload.single("pdf"), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: "Nenhum arquivo PDF foi enviado." });
     }
@@ -55,7 +56,7 @@ router.post("/upload", upload.single("pdf"), async (req, res) => {
     }
 });
 
-router.delete("/upload/:id", (req, res) => {
+router.delete("/upload/:id", autenticar, (req, res) => {
     const { id } = req.params;
 
     try {
